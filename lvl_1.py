@@ -163,6 +163,7 @@ def show_start_screen(sc):
     wait_for_key()
 
 
+# Надо реализоваить эту функцию
 def show_go_screen(sc):
     # game over/continue
     if not running:
