@@ -62,7 +62,8 @@ player_action = 'idle'
 player_frame = 0
 player_flip = False
 
-game_map = load_map('map')
+game_map = load_map('lvl_1')
+game_map_bg = load_map('lvl_1_bg')
 
 # player
 player_rect = pygame.Rect(100, 100, 17, 22)
@@ -105,6 +106,38 @@ chamomile.set_colorkey(WHITE)
 chamomile_2.set_colorkey(WHITE)
 orange_flower.set_colorkey(WHITE)
 orange_flower_2.set_colorkey(WHITE)
+# background
+bg = pygame.image.load('data/tailes/background/bg.png')
+top_bg_grass = pygame.image.load('data/tailes/background/top_bg_grass.png')
+topright_bg_grass = pygame.image.load('data/tailes/background/topright_bg_grass.png')
+right_bg_grass = pygame.image.load('data/tailes/background/right_bg_grass.png')
+bottomright_bg_grass = pygame.image.load('data/tailes/background/bottomright_bg_grass.png')
+bottom_bg_grass = pygame.image.load('data/tailes/background/bottom_bg_grass.png')
+bottomleft_bg_grass = pygame.image.load('data/tailes/background/bottomleft_bg_grass.png')
+left_bg_grass = pygame.image.load('data/tailes/background/left_bg_grass.png')
+topleft_bg_grass = pygame.image.load('data/tailes/background/topleft_bg_grass.png')
+bg_1 = pygame.image.load('data/tailes/background/bg_1.png')
+bg_2 = pygame.image.load('data/tailes/background/bg_2.png')
+topleft_bg = pygame.image.load('data/tailes/background/topleft_bg.png')
+topright_bg = pygame.image.load('data/tailes/background/topright_bg.png')
+bottomright_bg = pygame.image.load('data/tailes/background/bottomright_bg.png')
+bottomleft_bg =  pygame.image.load('data/tailes/background/bottomleft_bg.png')
+bg.set_colorkey(WHITE)
+top_bg_grass.set_colorkey(WHITE)
+topright_bg_grass.set_colorkey(WHITE)
+right_bg_grass.set_colorkey(WHITE)
+bottomright_bg_grass.set_colorkey(WHITE)
+bottom_bg_grass.set_colorkey(WHITE)
+bottomleft_bg_grass.set_colorkey(WHITE)
+left_bg_grass.set_colorkey(WHITE)
+topleft_bg_grass.set_colorkey(WHITE)
+bg_1.set_colorkey(WHITE)
+bg_2.set_colorkey(WHITE)
+topleft_bg.set_colorkey(WHITE)
+topright_bg.set_colorkey(WHITE)
+bottomright_bg.set_colorkey(WHITE)
+bottomleft_bg.set_colorkey(WHITE)
+
 
 TILE_SIZE = top_grass.get_width()
 running = True
@@ -164,6 +197,7 @@ def show_start_screen(sc):
 # Надо реализоваить эту функцию
 def show_go_screen(sc):
     # game over/continue
+    global running
     if not running:
         return
     sc.fill(BGCOLOR)
@@ -200,6 +234,42 @@ while playing:  # game loop
         scroll[1] = int(scroll[1])
 
         pygame.draw.rect(display, BGCOLOR, pygame.Rect(0, 120, 400, 200))
+        y = 0
+        for row in game_map_bg:
+            x = 0
+            for tile in row:
+                if tile == '1':
+                    display.blit(bg, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '2':
+                    display.blit(top_bg_grass, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '3':
+                    display.blit(topright_bg_grass, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '4':
+                    display.blit(right_bg_grass, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '5':
+                    display.blit(bottomright_bg_grass, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '6':
+                    display.blit(bottom_bg_grass, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '7':
+                    display.blit(bottomleft_bg_grass, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '8':
+                    display.blit(left_bg_grass, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '9':
+                    display.blit(topleft_bg_grass, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '<':
+                    display.blit(bg_1, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '^':
+                    display.blit(bg_2, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == 'i':
+                    display.blit(topleft_bg, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == 'o':
+                    display.blit(topright_bg, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == 'l':
+                    display.blit(bottomright_bg, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == 'k':
+                    display.blit(bottomleft_bg, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                x += 1
+            y += 1
 
         tile_rect = []
         y = 0
