@@ -14,6 +14,8 @@ moving_left = False
 player_y_momentum = 0
 air_timer = 0
 true_scroll = [0, 0]
+# font
+font = pygame.font.Font('data/font/Dico.ttf', 20)
 
 
 def load_map(path):
@@ -66,7 +68,8 @@ game_map = load_map('lvl_1')
 game_map_bg = load_map('lvl_1_bg')
 
 # player
-player_rect = pygame.Rect(100, 100, 17, 22)
+sprite = pygame.sprite.Sprite()
+player_rect = pygame.Rect(150, 20, 17, 22)
 
 # environment
 # grass
@@ -121,7 +124,7 @@ bg_2 = pygame.image.load('data/tailes/background/bg_2.png')
 topleft_bg = pygame.image.load('data/tailes/background/topleft_bg.png')
 topright_bg = pygame.image.load('data/tailes/background/topright_bg.png')
 bottomright_bg = pygame.image.load('data/tailes/background/bottomright_bg.png')
-bottomleft_bg =  pygame.image.load('data/tailes/background/bottomleft_bg.png')
+bottomleft_bg = pygame.image.load('data/tailes/background/bottomleft_bg.png')
 bg.set_colorkey(WHITE)
 top_bg_grass.set_colorkey(WHITE)
 topright_bg_grass.set_colorkey(WHITE)
@@ -137,7 +140,9 @@ topleft_bg.set_colorkey(WHITE)
 topright_bg.set_colorkey(WHITE)
 bottomright_bg.set_colorkey(WHITE)
 bottomleft_bg.set_colorkey(WHITE)
-
+# spike
+spike = pygame.image.load('data/tailes/spike.png')
+spike.set_colorkey(WHITE)
 
 TILE_SIZE = top_grass.get_width()
 running = True
@@ -146,16 +151,19 @@ playing = True
 
 def collision_test(rect, tiles):
     hit_list = []
-    for tile in tiles:
-        if rect.colliderect(tile):
-            hit_list.append(tile)
-    return hit_list
+    test = True
+    for i, tile in tiles.items():
+        if rect.colliderect(tile[0]):
+            hit_list.append(tile[0])
+            if rect.colliderect(tile[0]) and tile[1] == 'M':
+                test = False
+    return hit_list, test
 
 
 def move(rect, movement, tiles):
     collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
     rect.x += movement[0]
-    hit_list = collision_test(rect, tiles)
+    hit_list, test = collision_test(rect, tiles)
     for tile in hit_list:
         if movement[0] > 0:
             rect.right = tile.left
@@ -164,7 +172,7 @@ def move(rect, movement, tiles):
             rect.left = tile.right
             collision_types['left'] = True
     rect.y += movement[1]
-    hit_list = collision_test(rect, tiles)
+    hit_list, test = collision_test(rect, tiles)
     for tile in hit_list:
         if movement[1] > 0:
             rect.bottom = tile.top
@@ -172,12 +180,10 @@ def move(rect, movement, tiles):
         elif movement[1] < 0:
             rect.top = tile.bottom
             collision_types['top'] = True
-    return rect, collision_types
+    return rect, collision_types, test
 
 
-def draw_text(text, size, color, x, y, screen):
-    font_name = 'arial'
-    font = pygame.font.SysFont(font_name, size)
+def draw_text(text, color, x, y, screen, font):
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
@@ -186,10 +192,11 @@ def draw_text(text, size, color, x, y, screen):
 
 def show_start_screen(sc):
     # game splash/start screen
+    font = pygame.font.Font('data/font/Dico.ttf', 40)
     sc.fill(BGCOLOR)
-    draw_text(WINDOW_TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4, sc)
-    draw_text("Arrows to move, Space to jump", 22, WHITE, WIDTH / 2, HEIGHT / 2, sc)
-    draw_text("Press a key to play", 22, WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc)
+    draw_text(WINDOW_TITLE, RED, WIDTH / 2, HEIGHT / 4, sc, font)
+    draw_text("Arrows to move, Space to jump", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    draw_text("Press a key to play", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
@@ -197,36 +204,47 @@ def show_start_screen(sc):
 # Надо реализоваить эту функцию
 def show_go_screen(sc):
     # game over/continue
+    font = pygame.font.Font('data/font/Dico.ttf', 40)
     global running
-    if not running:
+    if running:
         return
     sc.fill(BGCOLOR)
-    draw_text("GAME OVER", 48, WHITE, WIDTH / 2, HEIGHT / 4, sc)
-    draw_text("Score: ", 22, WHITE, WIDTH / 2, HEIGHT / 2, sc)
-    draw_text("Press a key to play again", 22, WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc)
+    draw_text("GAME OVER", WHITE, WIDTH / 2, HEIGHT / 4, sc, font)
+    draw_text("Score: ", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    draw_text("Press a key to play again", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
 
 def wait_for_key():
     waiting = True
-    global clock
-    global running
+    global clock, running, playing, moving_right, moving_left, player_rect, another_air_timer, score_timer
     while waiting:
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 waiting = False
+                playing = False
                 running = False
             if event.type == pygame.KEYUP:
                 waiting = False
+                running = True
+                player_rect.x = 150
+                player_rect.y = 20
+                moving_right = False
+                moving_left = False
+                another_air_timer = 0
+                score_timer = 0
 
+
+score_timer = 0
+another_air_timer = 0
 
 show_start_screen(screen)
 while playing:  # game loop
     while running:
+        score_timer += 1
         display.fill((146, 244, 255))
-
         true_scroll[0] += (player_rect.x - true_scroll[0] - 152) / 30
         true_scroll[1] += (player_rect.y - true_scroll[1] - 106) / 30
         scroll = true_scroll.copy()
@@ -271,7 +289,7 @@ while playing:  # game loop
                 x += 1
             y += 1
 
-        tile_rect = []
+        tile_rect = {}
         y = 0
         for row in game_map:
             x = 0
@@ -300,8 +318,11 @@ while playing:  # game loop
                     display.blit(right_dirt, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
                 if tile == '<':
                     display.blit(left_dirt, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
-                if tile in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '^', '>', '<']:
-                    tile_rect.append(pygame.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+                if tile == 'M':
+                    display.blit(spike, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '^', '>', '<', 'M']:
+                    tile_rect[str(pygame.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))] = pygame.Rect(
+                        x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), tile
                 x += 1
             y += 1
 
@@ -323,7 +344,15 @@ while playing:  # game loop
         if player_movement[0] < 0:
             player_action, player_frame = change_action(player_action, player_frame, 'run')
             player_flip = True
-        player_rect, collisions = move(player_rect, player_movement, tile_rect)
+        player_rect, collisions, running = move(player_rect, player_movement, tile_rect)
+
+        if not collisions['bottom'] and not collisions['top'] and not collisions['left'] and not collisions['right']:
+            another_air_timer += 1
+        else:
+            another_air_timer = 0
+
+        if another_air_timer / 60 >= 5:
+            running = False
 
         if collisions['bottom']:
             player_y_momentum = 0
@@ -355,6 +384,7 @@ while playing:  # game loop
                     display.blit(orange_flower_2, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
                 x += 1
             y += 1
+            draw_text(str(score_timer // 60), WHITE, 20, 5, display, font)
 
         for event in pygame.event.get():  # event loop
             if event.type == QUIT:  # check for window quit
@@ -377,4 +407,5 @@ while playing:  # game loop
         screen.blit(surf, (0, 0))
         pygame.display.update()  # update display
         clock.tick(60)  # maintain 60 fps
+    show_go_screen(screen)
 pygame.quit()
