@@ -71,6 +71,7 @@ player_flip = False
 
 game_map = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}')
 game_map_bg = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_bg')
+game_map_world = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_world')
 
 # player
 sprite = pygame.sprite.Sprite()
@@ -111,6 +112,7 @@ spike.set_colorkey(WHITE)
 teleport = pygame.image.load('data/tailes/teleport/teleport.png')
 teleport.set_colorkey(WHITE)
 
+# lvl_?_bg
 # background
 bg = pygame.image.load('data/tailes/background/bg.png')
 top_bg_grass = pygame.image.load('data/tailes/background/top_bg_grass.png')
@@ -144,6 +146,7 @@ topright_bg.set_colorkey(WHITE)
 bottomright_bg.set_colorkey(WHITE)
 bottomleft_bg.set_colorkey(WHITE)
 
+# lvl_?_world
 # herb
 herb = pygame.image.load('data/tailes/herb/herb.png')
 chamomile = pygame.image.load('data/tailes/herb/chamomile.png')
@@ -155,8 +158,33 @@ chamomile.set_colorkey(WHITE)
 chamomile_2.set_colorkey(WHITE)
 orange_flower.set_colorkey(WHITE)
 orange_flower_2.set_colorkey(WHITE)
+# stone
+stone_1 = pygame.image.load('data/tailes/stone/stone_1.png')
+stone_2 = pygame.image.load('data/tailes/stone/stone_2.png')
+stone_1.set_colorkey(WHITE)
+stone_2.set_colorkey(WHITE)
+# world
+box = pygame.image.load('data/tailes/world/box.png')
+desk = pygame.image.load('data/tailes/world/desk.png')
+desk_arrow = pygame.image.load('data/tailes/world/desk_arrow.png')
+fence_1 = pygame.image.load('data/tailes/world/fence_1.png')
+fence_2 = pygame.image.load('data/tailes/world/fence_2.png')
+fence_3 = pygame.image.load('data/tailes/world/fence_3.png')
+fenceb_1 = pygame.image.load('data/tailes/world/fenceb_1.png')
+fenceb_2 = pygame.image.load('data/tailes/world/fenceb_2.png')
+fenceb_3 = pygame.image.load('data/tailes/world/fenceb_3.png')
+box.set_colorkey(WHITE)
+desk.set_colorkey(WHITE)
+desk_arrow.set_colorkey(WHITE)
+fence_1.set_colorkey(WHITE)
+fence_2.set_colorkey(WHITE)
+fence_3.set_colorkey(WHITE)
+fenceb_1.set_colorkey(WHITE)
+fenceb_2.set_colorkey(WHITE)
+fenceb_3.set_colorkey(WHITE)
 
 TILE_SIZE = top_grass.get_width()
+BOX_TLIE_SIZE = box.get_width()
 running = True
 playing = True
 
@@ -318,6 +346,31 @@ while playing:  # game loop
                 x += 1
             y += 1
 
+        y = 0
+        for row in game_map_world:
+            x = 0
+            for tile in row:
+                if tile == '1':
+                    display.blit(box, (x * BOX_TLIE_SIZE - scroll[0], y * BOX_TLIE_SIZE - scroll[1]))
+                if tile == '2':
+                    display.blit(desk, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '3':
+                    display.blit(desk_arrow, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '7':
+                    display.blit(fenceb_1, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '8':
+                    display.blit(fenceb_2, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '9':
+                    display.blit(fenceb_3, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == 'S':
+                    display.blit(stone_2, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == 'g':
+                    display.blit(chamomile_2, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == 'j':
+                    display.blit(orange_flower_2, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                x += 1
+            y += 1
+
         tile_rect = {}
         y = 0
         for row in game_map:
@@ -400,19 +453,23 @@ while playing:  # game loop
                      (player_rect.x - scroll[0], player_rect.y - scroll[1]))
 
         y = 0
-        for row in game_map:
+        for row in game_map_world:
             x = 0
             for tile in row:
                 if tile == 'w':
                     display.blit(herb, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
                 if tile == 'f':
                     display.blit(chamomile, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
-                if tile == 'f':
-                    display.blit(chamomile_2, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
                 if tile == 'h':
                     display.blit(orange_flower, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
-                if tile == 'j':
-                    display.blit(orange_flower_2, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == 's':
+                    display.blit(stone_1, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '4':
+                    display.blit(fence_1, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '5':
+                    display.blit(fence_2, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile == '6':
+                    display.blit(fence_3, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
                 x += 1
             y += 1
             draw_text(str(score_timer // 60), WHITE, 20, 5, display, font)
