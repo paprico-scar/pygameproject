@@ -1,6 +1,7 @@
 import pygame  # import pygame and sys
 from pygame.locals import *  # import pygame modules
 from settings import *
+import sqlite3
 
 pygame.init()  # initiate pygame
 pygame.display.set_caption(WINDOW_TITLE)  # set the window name
@@ -14,8 +15,12 @@ moving_left = False
 player_y_momentum = 0
 air_timer = 0
 true_scroll = [0, 0]
+
 # font
 font = pygame.font.Font('data/font/Dico.ttf', 20)
+
+# lvl count
+lvl_count = '1'
 
 
 def load_map(path):
@@ -64,14 +69,15 @@ player_action = 'idle'
 player_frame = 0
 player_flip = False
 
-game_map = load_map('lvl_1')
-game_map_bg = load_map('lvl_1_bg')
+game_map = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}')
+game_map_bg = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_bg')
 
 # player
 sprite = pygame.sprite.Sprite()
 player_rect = pygame.Rect(150, 20, 17, 22)
 
 # environment
+# lvl_?
 # grass
 lefttop_grass = pygame.image.load('data/tailes/grass/lefttop_grass.png')
 righttop_grass = pygame.image.load('data/tailes/grass/righttop_grass.png')
@@ -98,17 +104,13 @@ lefttop_dirt.set_colorkey(WHITE)
 right_dirt.set_colorkey(WHITE)
 righttop_dirt.set_colorkey(WHITE)
 top_dirt.set_colorkey(WHITE)
-# herb
-herb = pygame.image.load('data/tailes/herb/herb.png')
-chamomile = pygame.image.load('data/tailes/herb/chamomile.png')
-chamomile_2 = pygame.image.load('data/tailes/herb/chamomile_2.png')
-orange_flower = pygame.image.load('data/tailes/herb/orange_flower.png')
-orange_flower_2 = pygame.image.load('data/tailes/herb/orange_flower_2.png')
-herb.set_colorkey(WHITE)
-chamomile.set_colorkey(WHITE)
-chamomile_2.set_colorkey(WHITE)
-orange_flower.set_colorkey(WHITE)
-orange_flower_2.set_colorkey(WHITE)
+# spike
+spike = pygame.image.load('data/tailes/spike.png')
+spike.set_colorkey(WHITE)
+# teleport
+teleport = pygame.image.load('data/tailes/teleport/teleport.png')
+teleport.set_colorkey(WHITE)
+
 # background
 bg = pygame.image.load('data/tailes/background/bg.png')
 top_bg_grass = pygame.image.load('data/tailes/background/top_bg_grass.png')
@@ -125,6 +127,7 @@ topleft_bg = pygame.image.load('data/tailes/background/topleft_bg.png')
 topright_bg = pygame.image.load('data/tailes/background/topright_bg.png')
 bottomright_bg = pygame.image.load('data/tailes/background/bottomright_bg.png')
 bottomleft_bg = pygame.image.load('data/tailes/background/bottomleft_bg.png')
+water = pygame.image.load('data/tailes/background/water.png')
 bg.set_colorkey(WHITE)
 top_bg_grass.set_colorkey(WHITE)
 topright_bg_grass.set_colorkey(WHITE)
@@ -140,9 +143,18 @@ topleft_bg.set_colorkey(WHITE)
 topright_bg.set_colorkey(WHITE)
 bottomright_bg.set_colorkey(WHITE)
 bottomleft_bg.set_colorkey(WHITE)
-# spike
-spike = pygame.image.load('data/tailes/spike.png')
-spike.set_colorkey(WHITE)
+
+# herb
+herb = pygame.image.load('data/tailes/herb/herb.png')
+chamomile = pygame.image.load('data/tailes/herb/chamomile.png')
+chamomile_2 = pygame.image.load('data/tailes/herb/chamomile_2.png')
+orange_flower = pygame.image.load('data/tailes/herb/orange_flower.png')
+orange_flower_2 = pygame.image.load('data/tailes/herb/orange_flower_2.png')
+herb.set_colorkey(WHITE)
+chamomile.set_colorkey(WHITE)
+chamomile_2.set_colorkey(WHITE)
+orange_flower.set_colorkey(WHITE)
+orange_flower_2.set_colorkey(WHITE)
 
 TILE_SIZE = top_grass.get_width()
 running = True
@@ -150,6 +162,7 @@ playing = True
 
 
 def collision_test(rect, tiles):
+    global lvl_count, player_rect, game_map_bg, game_map
     hit_list = []
     test = True
     for i, tile in tiles.items():
@@ -157,6 +170,12 @@ def collision_test(rect, tiles):
             hit_list.append(tile[0])
             if rect.colliderect(tile[0]) and tile[1] == 'M':
                 test = False
+            if rect.colliderect(tile[0]) and tile[1] == 'O':
+                lvl_count = str(int(lvl_count) + 1)
+                game_map = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}')
+                game_map_bg = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_bg')
+                player_rect.x = 150
+                player_rect.y = 20
     return hit_list, test
 
 
@@ -201,16 +220,26 @@ def show_start_screen(sc):
     wait_for_key()
 
 
-# Надо реализоваить эту функцию
 def show_go_screen(sc):
     # game over/continue
+    global score_timer
+    final_score = score_timer // 60
+    con = sqlite3.connect('data/db/game.db')
+    cur = con.cursor()
+    max_id = cur.execute('''SELECT MAX(id) FROM tb_score''').fetchone()
+    new_id = max_id[0] + 1
+    add_in_db = [new_id, final_score]
+    cur.execute('''INSERT INTO tb_score VALUES(?,?);''', add_in_db)
+    con.commit()
+    max_score = cur.execute('''SELECT MAX(score) FROM tb_score''').fetchone()
     font = pygame.font.Font('data/font/Dico.ttf', 40)
     global running
     if running:
         return
     sc.fill(BGCOLOR)
-    draw_text("GAME OVER", WHITE, WIDTH / 2, HEIGHT / 4, sc, font)
-    draw_text("Score: ", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    draw_text("GAME OVER", WHITE, WIDTH / 2, HEIGHT / 5, sc, font)
+    draw_text(f'Best score: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3, sc, font)
+    draw_text(f"Score: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
     draw_text("Press a key to play again", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
@@ -251,7 +280,7 @@ while playing:  # game loop
         scroll[0] = int(scroll[0])
         scroll[1] = int(scroll[1])
 
-        pygame.draw.rect(display, BGCOLOR, pygame.Rect(0, 120, 400, 200))
+        display.blit(water, (0, 120, 400, 200))
         y = 0
         for row in game_map_bg:
             x = 0
@@ -320,7 +349,9 @@ while playing:  # game loop
                     display.blit(left_dirt, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
                 if tile == 'M':
                     display.blit(spike, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
-                if tile in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '^', '>', '<', 'M']:
+                if tile == 'O':
+                    display.blit(teleport, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
+                if tile in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '^', '>', '<', 'M', 'O']:
                     tile_rect[str(pygame.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))] = pygame.Rect(
                         x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), tile
                 x += 1
