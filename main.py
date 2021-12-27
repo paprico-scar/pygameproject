@@ -34,20 +34,20 @@ def main():
 
 
 def start_screen():
-    intro_text = ["      SPACE INVADERS", "",
-                  "               Controls:",
+    intro_text = ["            SPACE INVADERS", "",
+                  "                   Controls:",
                   "right and left arrow to move",
                   "          up arrow to shoot", "",
                   "        Press a key to play!"]
     screen.fill((0, 0, 0))
-    font = pygame.font.Font(None, 50)
+    font = pygame.font.Font('font/space_invaders.ttf', 30)
     text_coord = 200
     for line in intro_text:
         string_rendered = font.render(line, True, pygame.Color('white'))
         intro_rect = string_rendered.get_rect()
         text_coord += 10
         intro_rect.top = text_coord
-        intro_rect.x = 420
+        intro_rect.x = 400
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
     while True:
