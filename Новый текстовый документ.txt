@@ -1,0 +1,63 @@
+# lvl_?
+блок с травой:
+1 = земля с травой (top_grass.png)
+2 = земля с травой справа (ставить справа от обычного блока) (top_leftgrass.png)
+3 = земля с травой слева (ставить слева от обычного блока) (top_rightgrass.png)
+4 = край земли с травой (слева от любого блока) (lefttop_grass.png)
+5 = край земли с травой (справа от любого блока) (righttop_grass.png)
+s
+блок без травы и блокаи под землей:
+6 = блок без травы (top_dirt.png)
+7 = крайний блок без травы (ставить слева от любого болка) (lefttop_dirt.png)
+8 = крайний блок без травы (ставить справа от любого болка) (righttop_dirt.png)
+9 = блок под землей (center_dirt.png)
+^ = блок под землей с камнем (center_dirt_with_stone.png) 
+> = блок под землей крайний справа (right_dirt.png)
+< = блок под землей крайний слева (left_dirt.png)
+
+шипы:
+M = шипы (spike.png)
+
+телепорт:
+O = телепорт (teleport.png)
+
+# lvl_?_bg
+задний фон:
+1 = просто задник (bg.png)
+2 = задник центральный сверху с листвой (top_bg_grass.png)
+3 = задник правый сверху с листвой (topright_bg_grass.png)
+4 = задник правый центр с листвой (right_bg_grass.png)
+5 = задник правый снизу с листвой (bottomright_bg_grass.png)
+6 = задник центральный снизу с листвой (bottom_bg_grass.png)
+7 = задник левый снизу с листвой (bottomleft_bg_grass.png)
+8 = задник левый центр с листвой (left_bg_grass.png)
+9 = задник левый сверху с листвой (topleft_bg_grass.png)
+< = задник тип 2 (bg_1.png)
+^ = задник тип 3 ((bg_2.png)
+i = (topleft_bg.png)
+o = (topright_bg.png)
+l = (bottomright_bg.png)
+k = (bottomleft_bg.png)
+
+# lvl_?_world
+трава и цветы:
+w = трава (herb.png)
+f = ромашка 1 тип (chamomile.png)
+g = ромашка 2 тип (chamomile_2.png) задник
+h = одуванчик 1 тип (orange_flower.png)
+j = одуванчик 2 тип (orange_flower_2.png) задник
+
+камни:
+s = камень 1 (stone_1.png)
+S = камень 2 (stone_2.png) задник
+
+наполнение:
+1 = каробка (box.png) задник
+2 = табличка (desk.png) задник
+3 = табличка в вмде стрелки (desk_arrow.png) задник
+4 = забор 1 (fence_1.png)
+5 = забор 2 (fence_2.png)
+6 = забор 3 (fence_3.png)
+7 = забор 1 (fenceb_1.png) (задник)
+8 = забор 2 (fenceb_2.png) (задник)
+9 = забор 3 (fenceb_3.png) (задник)
