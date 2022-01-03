@@ -1,9 +1,12 @@
 import pygame  # import pygame and sys
 from pygame.locals import *  # import pygame modules
 from settings import *
+import random
 import sqlite3
 
+pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()  # initiate pygame
+pygame.mixer.set_num_channels(64)
 pygame.display.set_caption(WINDOW_TITLE)  # set the window name
 clock = pygame.time.Clock()  # set up the clock
 screen = pygame.display.set_mode(SCREEN_SIZE, 0, 32)  # initiate screen
@@ -61,6 +64,7 @@ def change_action(action_var, frame, new_value):
     return action_var, frame
 
 
+# animation
 animation_datebase = {}
 animation_datebase['run'] = load_animations('data/player_animations/run', [10, 10, 10, 10])
 animation_datebase['idle'] = load_animations('data/player_animations/idle', [40])
@@ -69,13 +73,26 @@ player_action = 'idle'
 player_frame = 0
 player_flip = False
 
+# map
 game_map = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}')
 game_map_bg = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_bg')
 game_map_world = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_world')
 
+# sounds and music
+jumping_sound = pygame.mixer.Sound('data/music_and_sounds/jump.wav')
+grass_sound = [pygame.mixer.Sound('data/music_and_sounds/grass_0.wav'),
+               pygame.mixer.Sound('data/music_and_sounds/grass_1.wav')]
+grass_sound[0].set_volume(0.4)
+grass_sound[1].set_volume(0.4)
+
+pygame.mixer.music.load('data/music_and_sounds/music.wav')
+pygame.mixer.music.play(-1)
+
+grass_sound_timer = 0
+
 # player
 sprite = pygame.sprite.Sprite()
-player_rect = pygame.Rect(150, 20, 17, 22)
+player_rect = pygame.Rect(250, 160, 17, 22)
 
 # environment
 # lvl_?
@@ -190,7 +207,7 @@ playing = True
 
 
 def collision_test(rect, tiles):
-    global lvl_count, player_rect, game_map_bg, game_map
+    global lvl_count, player_rect, game_map_bg, game_map, game_map_world, screen
     hit_list = []
     test = True
     for i, tile in tiles.items():
@@ -199,11 +216,13 @@ def collision_test(rect, tiles):
             if rect.colliderect(tile[0]) and tile[1] == 'M':
                 test = False
             if rect.colliderect(tile[0]) and tile[1] == 'O':
-                lvl_count = str(int(lvl_count) + 1)
-                game_map = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}')
-                game_map_bg = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_bg')
-                player_rect.x = 150
-                player_rect.y = 20
+                player_rect.x = 250
+                player_rect.y = 316
+                if lvl_count == '2':
+                    the_end(screen)
+                else:
+                    lvl_count = str(int(lvl_count) + 1)
+                    new_level(screen)
     return hit_list, test
 
 
@@ -248,9 +267,32 @@ def show_start_screen(sc):
     wait_for_key()
 
 
+def new_level(sc):
+    font = pygame.font.Font('data/font/Dico.ttf', 40)
+    sc.fill(BGCOLOR)
+    draw_text('Level 2', WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    pygame.display.flip()
+    wait_for_key()
+
+
+def the_end(sc):
+    global running, playing, score_timer
+    final_score = score_timer // 60
+    con = sqlite3.connect('data/db/game.db')
+    cur = con.cursor()
+    max_score = cur.execute('''SELECT MAX(score) FROM tb_score''').fetchone()
+    font = pygame.font.Font('data/font/Dico.ttf', 40)
+    sc.fill(BGCOLOR)
+    draw_text('Thanks for playing', WHITE, WIDTH / 2, HEIGHT / 4, sc, font)
+    draw_text(f'Best score: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3, sc, font)
+    draw_text(f"Score: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    pygame.display.flip()
+    pygame.quit()
+
+
 def show_go_screen(sc):
     # game over/continue
-    global score_timer
+    global score_timer, another_air_timer, lvl_count
     final_score = score_timer // 60
     con = sqlite3.connect('data/db/game.db')
     cur = con.cursor()
@@ -264,6 +306,9 @@ def show_go_screen(sc):
     global running
     if running:
         return
+    score_timer = 0
+    another_air_timer = 0
+    lvl_count = '1'
     sc.fill(BGCOLOR)
     draw_text("GAME OVER", WHITE, WIDTH / 2, HEIGHT / 5, sc, font)
     draw_text(f'Best score: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3, sc, font)
@@ -276,6 +321,7 @@ def show_go_screen(sc):
 def wait_for_key():
     waiting = True
     global clock, running, playing, moving_right, moving_left, player_rect, another_air_timer, score_timer
+    global game_map, game_map_bg, game_map_world, lvl_count
     while waiting:
         clock.tick(FPS)
         for event in pygame.event.get():
@@ -286,12 +332,13 @@ def wait_for_key():
             if event.type == pygame.KEYUP:
                 waiting = False
                 running = True
-                player_rect.x = 150
-                player_rect.y = 20
+                player_rect.x = 250
+                player_rect.y = 316
                 moving_right = False
                 moving_left = False
-                another_air_timer = 0
-                score_timer = 0
+                game_map = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}')
+                game_map_bg = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_bg')
+                game_map_world = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_world')
 
 
 score_timer = 0
@@ -307,6 +354,9 @@ while playing:  # game loop
         scroll = true_scroll.copy()
         scroll[0] = int(scroll[0])
         scroll[1] = int(scroll[1])
+
+        if grass_sound_timer > 0:
+            grass_sound_timer -= 1
 
         display.blit(water, (0, 120, 400, 200))
         y = 0
@@ -351,7 +401,7 @@ while playing:  # game loop
             x = 0
             for tile in row:
                 if tile == '1':
-                    display.blit(box, (x * BOX_TLIE_SIZE - scroll[0], y * BOX_TLIE_SIZE - scroll[1]))
+                    display.blit(box, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
                 if tile == '2':
                     display.blit(desk, (x * TILE_SIZE - scroll[0], y * TILE_SIZE - scroll[1]))
                 if tile == '3':
@@ -441,6 +491,10 @@ while playing:  # game loop
         if collisions['bottom']:
             player_y_momentum = 0
             air_timer = 0
+            if player_movement[0] != 0:
+                if grass_sound_timer == 0:
+                    grass_sound_timer = 30
+                    random.choice(grass_sound).play()
         else:
             air_timer += 1
 
@@ -479,12 +533,17 @@ while playing:  # game loop
                 running = False
                 playing = False
             if event.type == KEYDOWN:
+                if event.key == K_w:
+                    pygame.mixer.music.fadeout(1000)
+                if event.key == K_e:
+                    pygame.mixer.music.play(-1)
                 if event.key == K_RIGHT:
                     moving_right = True
                 if event.key == K_LEFT:
                     moving_left = True
                 if event.key == K_SPACE:
                     if air_timer < 6:
+                        jumping_sound.play()
                         player_y_momentum = -5
             if event.type == KEYUP:
                 if event.key == K_RIGHT:
