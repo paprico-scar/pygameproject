@@ -260,9 +260,13 @@ def show_start_screen(sc):
     # game splash/start screen
     font = pygame.font.Font('data/font/Dico.ttf', 40)
     sc.fill(BGCOLOR)
-    draw_text(WINDOW_TITLE, RED, WIDTH / 2, HEIGHT / 4, sc, font)
-    draw_text("Arrows to move, Space to jump", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
-    draw_text("Press a key to play", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
+    draw_text(WINDOW_TITLE, RED, WIDTH / 3 * 1.5, HEIGHT / 5, sc, font)
+    font = pygame.font.Font('data/font/Dico.ttf', 25)
+    draw_text("Arrows to move", WHITE, WIDTH / 4, HEIGHT / 3, sc, font)
+    draw_text("Space to jump", WHITE, WIDTH / 4, HEIGHT / 3 + 40, sc, font)
+    draw_text('To stop music press "w" key', WHITE, WIDTH / 4 * 3, HEIGHT / 3, sc, font)
+    draw_text('To play music press "e" key', WHITE, WIDTH / 4 * 3, HEIGHT / 3 + 40, sc, font)
+    draw_text("Press any key to play", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
