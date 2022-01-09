@@ -220,6 +220,7 @@ def collision_test(rect, tiles):
                 player_rect.y = 316
                 if lvl_count == '2':
                     the_end(screen)
+                    pygame.quit()
                 else:
                     lvl_count = str(int(lvl_count) + 1)
                     new_level(screen)
@@ -266,6 +267,7 @@ def show_start_screen(sc):
     draw_text("Space to jump", WHITE, WIDTH / 4, HEIGHT / 3 + 40, sc, font)
     draw_text('To stop music press "w" key', WHITE, WIDTH / 4 * 3, HEIGHT / 3, sc, font)
     draw_text('To play music press "e" key', WHITE, WIDTH / 4 * 3, HEIGHT / 3 + 40, sc, font)
+    draw_text('jump only on the chest to go to the next level', WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
     draw_text("Press any key to play", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
@@ -291,7 +293,7 @@ def the_end(sc):
     draw_text(f'Best score: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3, sc, font)
     draw_text(f"Score: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
     pygame.display.flip()
-    pygame.quit()
+    wait_for_key()
 
 
 def show_go_screen(sc):
@@ -317,7 +319,7 @@ def show_go_screen(sc):
     draw_text("GAME OVER", WHITE, WIDTH / 2, HEIGHT / 5, sc, font)
     draw_text(f'Best score: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3, sc, font)
     draw_text(f"Score: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
-    draw_text("Press a key to play again", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
+    draw_text("Press any key to play again", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
