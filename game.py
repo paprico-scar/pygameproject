@@ -337,6 +337,8 @@ def wait_for_key():
                 waiting = False
                 playing = False
                 running = False
+                pygame.quit()
+                call(['python', 'first_window.py'])
             if event.type == pygame.KEYUP:
                 waiting = False
                 running = True
@@ -540,6 +542,8 @@ while playing:  # game loop
             if event.type == QUIT:  # check for window quit
                 running = False
                 playing = False
+                call(['python', 'first_window.py'])
+                pygame.quit()
             if event.type == KEYDOWN:
                 if event.key == K_w:
                     pygame.mixer.music.fadeout(1000)
@@ -563,4 +567,3 @@ while playing:  # game loop
         pygame.display.update()  # update display
         clock.tick(60)  # maintain 60 fps
     show_go_screen(screen)
-pygame.quit()

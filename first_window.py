@@ -4,7 +4,7 @@ from subprocess import call
 
 
 pygame.init()  # initiate pygame
-pygame.display.set_caption('Choose the game')  # set the window name
+pygame.display.set_caption(FIRST_WINDOW_TITLE)  # set the window name
 clock = pygame.time.Clock()  # set up the clock
 screen = pygame.display.set_mode(SCREEN_SIZE, 0, 32)  # initiate screen
 waiting = True
@@ -22,7 +22,7 @@ while waiting:
             if event.key == pygame.K_j:
                 waiting = False
                 call(['python', 'test.py'])
-    draw_text('Welcome to RELAX', WHITE, WIDTH / 2, HEIGHT / 4, screen, font)
-    draw_text('To play in first game press "j"', WHITE, WIDTH / 2, HEIGHT / 3 + 40, screen, font)
-    draw_text('To play in second game press "h"', WHITE, WIDTH / 2, HEIGHT / 3 + 120, screen, font)
+    draw_text(f'Добро пожаловать в {FIRST_WINDOW_TITLE}', WHITE, WIDTH / 2, HEIGHT / 4, screen, font)
+    draw_text('Чтобы играть в SPACE INVADERS нажмите "j"', WHITE, WIDTH / 2, HEIGHT / 3 + 40, screen, font)
+    draw_text('Чтобы играть в RELAX нажмите "h"', WHITE, WIDTH / 2, HEIGHT / 3 + 120, screen, font)
     pygame.display.flip()
