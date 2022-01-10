@@ -3,6 +3,7 @@ from pygame.locals import *  # import pygame modules
 from settings import *
 import random
 import sqlite3
+from subprocess import call
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()  # initiate pygame
@@ -221,6 +222,7 @@ def collision_test(rect, tiles):
                 if lvl_count == '2':
                     the_end(screen)
                     pygame.quit()
+                    call(['python', 'first_window.py'])
                 else:
                     lvl_count = str(int(lvl_count) + 1)
                     new_level(screen)
