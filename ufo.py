@@ -5,7 +5,7 @@ class UFO(pygame.sprite.Sprite):
     def __init__(self, screen):
         super(UFO, self).__init__()
         self.screen = screen
-        self.image = pygame.image.load('images/ufo.png')
+        self.image = pygame.image.load('data/images/ufo.png')
         self.rect = self.image.get_rect()
         self.rect.x = -100
         self.rect.y = 10

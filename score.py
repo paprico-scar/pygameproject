@@ -5,7 +5,7 @@ class Score:
     def __init__(self, screen):
         self.screen = screen
         self.screen_rect = screen.get_rect()
-        self.font = pygame.font.Font('font_kurasov/space_invaders.ttf', 30)
+        self.font = pygame.font.Font('data/font_kurasov/space_invaders.ttf', 30)
         self.score = 0
         self.image_score()
 

@@ -5,7 +5,7 @@ class Invader(pygame.sprite.Sprite):
     def __init__(self, screen):
         super(Invader, self).__init__()
         self.screen = screen
-        self.image = pygame.image.load('images/enemy.png')
+        self.image = pygame.image.load('data/images/enemy.png')
         self.rect = self.image.get_rect()
         self.rect.x = self.rect.width
         self.rect.y = self.rect.height

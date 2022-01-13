@@ -3,12 +3,14 @@ from random import choice
 from bullet import Bullet
 from enemies import Invader
 from ufo import UFO
+from subprocess import call
 
 
 def events(screen, gun, bullets):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            exit()
+            pygame.quit()
+            call(['python', 'first_window.py'])
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 if len(bullets) == 0:

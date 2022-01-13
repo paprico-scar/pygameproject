@@ -1,3 +1,5 @@
+import sys
+
 import pygame  # import pygame and sys
 from pygame.locals import *  # import pygame modules
 from settings import *
@@ -21,7 +23,7 @@ air_timer = 0
 true_scroll = [0, 0]
 
 # font
-font = pygame.font.Font('data/font/Dico.ttf', 20)
+font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 20)
 
 # lvl count
 lvl_count = '1'
@@ -261,24 +263,27 @@ def draw_text(text, color, x, y, screen, font):
 
 def show_start_screen(sc):
     # game splash/start screen
-    font = pygame.font.Font('data/font/Dico.ttf', 40)
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 40)
     sc.fill(BGCOLOR)
     draw_text(WINDOW_TITLE, RED, WIDTH / 3 * 1.5, HEIGHT / 5, sc, font)
-    font = pygame.font.Font('data/font/Dico.ttf', 25)
-    draw_text("Arrows to move", WHITE, WIDTH / 4, HEIGHT / 3, sc, font)
-    draw_text("Space to jump", WHITE, WIDTH / 4, HEIGHT / 3 + 40, sc, font)
-    draw_text('To stop music press "w" key', WHITE, WIDTH / 4 * 3, HEIGHT / 3, sc, font)
-    draw_text('To play music press "e" key', WHITE, WIDTH / 4 * 3, HEIGHT / 3 + 40, sc, font)
-    draw_text('jump only on the chest to go to the next level', WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
-    draw_text("Press any key to play", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 25)
+    draw_text("Стрелочки чтобы двигвться", WHITE, WIDTH / 4 - 20, HEIGHT / 3, sc, font)
+    draw_text("Пробел чтобы прыгать", WHITE, WIDTH / 4 - 20, HEIGHT / 3 + 40, sc, font)
+    draw_text('Чтобы отключить музыку нажмите "w"', WHITE, WIDTH / 4 * 3 - 20, HEIGHT / 3, sc, font)
+    draw_text('Чтобы включить музыку нажмитте "e"', WHITE, WIDTH / 4 * 3 - 20, HEIGHT / 3 + 40, sc, font)
+    draw_text('Пргайте на сундук только с верху', WHITE, WIDTH / 2 - 20, HEIGHT / 2, sc, font)
+    draw_text('Нажмите кнопку "n" чтобы начать заново', WHITE, WIDTH / 2 - 20, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
 
 def new_level(sc):
-    font = pygame.font.Font('data/font/Dico.ttf', 40)
+    global lvl_count
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 40)
     sc.fill(BGCOLOR)
-    draw_text('Level 2', WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    draw_text(f'Уровень {lvl_count}', WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 30)
+    draw_text('Нажмите кнопку "n" чтобы перейти на новый уровень', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
@@ -289,11 +294,12 @@ def the_end(sc):
     con = sqlite3.connect('data/db/game.db')
     cur = con.cursor()
     max_score = cur.execute('''SELECT MAX(score) FROM tb_score''').fetchone()
-    font = pygame.font.Font('data/font/Dico.ttf', 40)
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 40)
     sc.fill(BGCOLOR)
-    draw_text('Thanks for playing', WHITE, WIDTH / 2, HEIGHT / 4, sc, font)
-    draw_text(f'Best score: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3, sc, font)
-    draw_text(f"Score: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    draw_text('Спасибо за игру!', WHITE, WIDTH / 2, HEIGHT / 4, sc, font)
+    draw_text(f'Лучший счет: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3 + 20, sc, font)
+    draw_text(f"Счет: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    draw_text('Нажмите кнопку "n" чтобы завершить игру', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
@@ -310,7 +316,7 @@ def show_go_screen(sc):
     cur.execute('''INSERT INTO tb_score VALUES(?,?);''', add_in_db)
     con.commit()
     max_score = cur.execute('''SELECT MAX(score) FROM tb_score''').fetchone()
-    font = pygame.font.Font('data/font/Dico.ttf', 40)
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 40)
     global running
     if running:
         return
@@ -319,9 +325,26 @@ def show_go_screen(sc):
     lvl_count = '1'
     sc.fill(BGCOLOR)
     draw_text("GAME OVER", WHITE, WIDTH / 2, HEIGHT / 5, sc, font)
-    draw_text(f'Best score: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3, sc, font)
-    draw_text(f"Score: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
-    draw_text("Press any key to play again", WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
+    draw_text(f'Лучший счет: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3, sc, font)
+    draw_text(f"Счет: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
+    draw_text('Нажмите кнопку "n" чтобы начать заново', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
+    pygame.display.flip()
+    wait_for_key()
+
+
+def lor_screen(sc):
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 20)
+    sc.fill(BGCOLOR)
+    draw_text('Даным давно в одном королевстве правил король. Часто этот король', WHITE, WIDTH / 2, HEIGHT / 5, sc,
+              font)
+    draw_text('спал и не любил когда его отрывали от погужения в иные миры. Для', WHITE, WIDTH / 2, HEIGHT / 5 + 20, sc,
+              font)
+    draw_text('того чтобы уйти от людей, мешавших ему спать, он залез в сундук', WHITE, WIDTH / 2, HEIGHT / 5 + 40,
+              sc, font)
+    draw_text('который перенес его в странное место. Теперь наш герой пытается', WHITE, WIDTH / 2, HEIGHT / 5 + 60, sc,
+              font)
+    draw_text('выбраться из своей ситуация', WHITE, WIDTH / 2, HEIGHT / 5 + 80, sc,
+              font)
     pygame.display.flip()
     wait_for_key()
 
@@ -339,22 +362,30 @@ def wait_for_key():
                 running = False
                 pygame.quit()
                 call(['python', 'first_window.py'])
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_w:
+                    pygame.mixer.music.fadeout(1000)
+                if event.key == K_e:
+                    pygame.mixer.music.play(-1)
             if event.type == pygame.KEYUP:
-                waiting = False
-                running = True
-                player_rect.x = 250
-                player_rect.y = 316
-                moving_right = False
-                moving_left = False
-                game_map = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}')
-                game_map_bg = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_bg')
-                game_map_world = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_world')
+                if event.key == K_n:
+                    waiting = False
+                    running = True
+                    player_rect.x = 250
+                    player_rect.y = 316
+                    moving_right = False
+                    moving_left = False
+                    game_map = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}')
+                    game_map_bg = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_bg')
+                    game_map_world = load_map(f'data/leveles/lvl_{lvl_count}/lvl_{lvl_count}_world')
 
 
 score_timer = 0
 another_air_timer = 0
 
 show_start_screen(screen)
+lor_screen(screen)
 while playing:  # game loop
     while running:
         score_timer += 1
@@ -542,8 +573,9 @@ while playing:  # game loop
             if event.type == QUIT:  # check for window quit
                 running = False
                 playing = False
-                call(['python', 'first_window.py'])
                 pygame.quit()
+                call(['python', 'first_window.py'])
+                sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_w:
                     pygame.mixer.music.fadeout(1000)

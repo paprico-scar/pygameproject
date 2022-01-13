@@ -15,13 +15,16 @@ while waiting:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             waiting = False
+            pygame.quit()
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_h:
                 waiting = False
+                pygame.quit()
                 call(['python', 'game.py'])
             if event.key == pygame.K_j:
                 waiting = False
-                call(['python', 'test.py'])
+                pygame.quit()
+                call(['python', 'main.py'])
     draw_text(f'Добро пожаловать в {FIRST_WINDOW_TITLE}', WHITE, WIDTH / 2, HEIGHT / 4, screen, font)
     draw_text('Чтобы играть в SPACE INVADERS нажмите "j"', WHITE, WIDTH / 2, HEIGHT / 3 + 40, screen, font)
     draw_text('Чтобы играть в RELAX нажмите "h"', WHITE, WIDTH / 2, HEIGHT / 3 + 120, screen, font)

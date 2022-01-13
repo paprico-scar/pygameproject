@@ -5,12 +5,14 @@ from gun import Gun
 from wall import Wall
 from pygame.sprite import Group
 from score import Score
+from subprocess import call
+import sys
 
 pygame.init()
 size = WIDTH, HEIGHT = 1300, 750
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('SPACE INVADERS')
-pygame.display.set_icon(pygame.image.load('images/icon.png'))
+pygame.display.set_icon(pygame.image.load('data/images/icon.png'))
 
 
 def main():
@@ -41,7 +43,7 @@ def start_screen():
                   "          up arrow to shoot", "",
                   "        Press a key to play!"]
     screen.fill((0, 0, 0))
-    font = pygame.font.Font('font_kurasov/space_invaders.ttf', 30)
+    font = pygame.font.Font('data/font_kurasov/space_invaders.ttf', 30)
     text_coord = 200
     for line in intro_text:
         string_rendered = font.render(line, True, pygame.Color('white'))
@@ -54,7 +56,9 @@ def start_screen():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exit()
+                pygame.quit()
+                call(['python', 'first_window.py'])
+                sys.exit()
             elif event.type == pygame.KEYDOWN or \
                     event.type == pygame.MOUSEBUTTONDOWN:
                 return
