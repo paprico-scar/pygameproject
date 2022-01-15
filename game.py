@@ -310,7 +310,7 @@ def show_go_screen(sc):  # окно конца игры когда герой п
     cur.execute('''INSERT INTO tb_score VALUES(?,?);''', add_in_db)
     con.commit()
     max_score = cur.execute('''SELECT MAX(score) FROM tb_score''').fetchone()
-    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 40)
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 35)
     score_timer = 0
     another_air_timer = 0
     lvl_count = '1'
