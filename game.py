@@ -262,12 +262,12 @@ def show_start_screen(sc):  # начальное окно
     sc.fill(BGCOLOR)
     draw_text(WINDOW_TITLE, RED, WIDTH / 3 * 1.5, HEIGHT / 5, sc, font)
     font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 25)
-    draw_text("Стрелочки чтобы двигвться", WHITE, WIDTH / 4 - 20, HEIGHT / 3, sc, font)
-    draw_text("Пробел чтобы прыгать", WHITE, WIDTH / 4 - 20, HEIGHT / 3 + 40, sc, font)
+    draw_text("Стрелочки, чтобы двигвться", WHITE, WIDTH / 4 - 20, HEIGHT / 3, sc, font)
+    draw_text("Пробел, чтобы прыгать", WHITE, WIDTH / 4 - 20, HEIGHT / 3 + 40, sc, font)
     draw_text('Чтобы отключить музыку нажмите "w"', WHITE, WIDTH / 4 * 3 - 20, HEIGHT / 3, sc, font)
-    draw_text('Чтобы включить музыку нажмитте "e"', WHITE, WIDTH / 4 * 3 - 20, HEIGHT / 3 + 40, sc, font)
-    draw_text('Пргайте на сундук только сверху', WHITE, WIDTH / 2 - 20, HEIGHT / 2, sc, font)
-    draw_text('Нажмите кнопку "Enter" чтобы начать игру', WHITE, WIDTH / 2 - 20, HEIGHT * 3 / 4, sc, font)
+    draw_text('Чтобы включить музыку нажмите "e"', WHITE, WIDTH / 4 * 3 - 20, HEIGHT / 3 + 40, sc, font)
+    draw_text('Прыгайте на сундук только сверху', WHITE, WIDTH / 2 - 20, HEIGHT / 2, sc, font)
+    draw_text('Нажмите кнопку "Enter", чтобы начать игру', WHITE, WIDTH / 2 - 20, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
@@ -278,7 +278,7 @@ def new_level(sc):  # окно перехода на нофый уровень
     sc.fill(BGCOLOR)
     draw_text(f'Уровень {lvl_count}', WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
     font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 30)
-    draw_text('Нажмите кнопку "Enter" чтобы перейти на новый уровень', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
+    draw_text('Нажмите кнопку "Enter", чтобы перейти на новый уровень', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
@@ -294,7 +294,7 @@ def the_end(sc):  # окно конца игры кода вы пройдете 
     draw_text('Спасибо за игру!', WHITE, WIDTH / 2, HEIGHT / 4, sc, font)
     draw_text(f'Лучший счет: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3 + 20, sc, font)
     draw_text(f"Счет: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
-    draw_text('Нажмите кнопку "Enter" чтобы завершить игру', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
+    draw_text('Нажмите кнопку "Enter", чтобы завершить игру', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
@@ -318,7 +318,7 @@ def show_go_screen(sc):  # окно конца игры когда герой п
     draw_text("GAME OVER", WHITE, WIDTH / 2, HEIGHT / 5, sc, font)
     draw_text(f'Лучший счет: {max_score[0]}', WHITE, WIDTH / 2, HEIGHT / 3, sc, font)
     draw_text(f"Счет: {final_score}", WHITE, WIDTH / 2, HEIGHT / 2, sc, font)
-    draw_text('Нажмите кнопку "Enter" чтобы начать заново', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
+    draw_text('Нажмите кнопку "Enter", чтобы начать заново', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 
@@ -326,17 +326,17 @@ def show_go_screen(sc):  # окно конца игры когда герой п
 def lor_screen(sc):  # окно с историей игры
     font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 20)
     sc.fill(BGCOLOR)
-    draw_text('Даным давно в одном королевстве правил король. Часто этот король', WHITE, WIDTH / 2, HEIGHT / 5, sc,
+    draw_text('Давным-давно в одном королевстве правил король. Часто этот король', WHITE, WIDTH / 2, HEIGHT / 5, sc,
               font)
-    draw_text('спал и не любил когда его отрывали от погужения в иные миры. Для', WHITE, WIDTH / 2, HEIGHT / 5 + 20, sc,
+    draw_text('спал и не любил, когда его отрывали от погружения в иные миры. Для', WHITE, WIDTH / 2, HEIGHT / 5 + 20, sc,
               font)
-    draw_text('того чтобы уйти от людей, мешавших ему спать, он залез в сундук', WHITE, WIDTH / 2, HEIGHT / 5 + 40,
+    draw_text('того, чтобы уйти от людей, мешавших ему спать, он залез в сундук,', WHITE, WIDTH / 2, HEIGHT / 5 + 40,
               sc, font)
     draw_text('который перенес его в странное место. Теперь наш герой пытается', WHITE, WIDTH / 2, HEIGHT / 5 + 60, sc,
               font)
-    draw_text('выбраться из своей ситуация', WHITE, WIDTH / 2, HEIGHT / 5 + 80, sc,
+    draw_text('выбраться из своей ситуации.', WHITE, WIDTH / 2, HEIGHT / 5 + 80, sc,
               font)
-    draw_text('Нажмите кнопку "Enter" чтобы продолжить', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
+    draw_text('Нажмите кнопку "Enter", чтобы продолжить', WHITE, WIDTH / 2, HEIGHT * 3 / 4, sc, font)
     pygame.display.flip()
     wait_for_key()
 

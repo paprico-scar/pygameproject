@@ -32,25 +32,25 @@ def main():
         gun.update_gun()
         ufo.update()
         events.update_screen(screen, gun, enemies, ufo, bullets, w1, w2, w3, w4, sc)
-        events.update_bullets(enemies, ufo, bullets, w1, w2, w3, w4, screen, sc)
+        events.update_bullets(enemies, ufo, bullets, w1, w2, w3, w4, screen, sc, gun)
         events.update_enemies(enemies)
 
 
 def start_screen():
-    intro_text = ["            SPACE INVADERS", "",
-                  "                   Controls:",
-                  "right and left arrow to move",
-                  "          up arrow to shoot", "",
-                  "        Press a key to play!"]
+    intro_text = ["           SPACE INVADERS", "",
+                  "Управление:",
+                  "Правая и левая стрелочка для передвижения",
+                  "Стрелка вверх для стрельбы", "",
+                  'Нажмите кнопку "Enter", чтобы начать игру!']
     screen.fill((0, 0, 0))
-    font = pygame.font.Font('data/font_kurasov/space_invaders.ttf', 30)
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 30)
     text_coord = 200
     for line in intro_text:
-        string_rendered = font.render(line, True, pygame.Color('white'))
+        string_rendered = font.render(line, True, 'white')
         intro_rect = string_rendered.get_rect()
         text_coord += 10
         intro_rect.top = text_coord
-        intro_rect.x = 400
+        intro_rect.x = 350
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
     while True:
@@ -59,8 +59,7 @@ def start_screen():
                 pygame.quit()
                 call(['python', 'first_window.py'])
                 sys.exit()
-            elif event.type == pygame.KEYDOWN or \
-                    event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 return
         pygame.display.flip()
 
