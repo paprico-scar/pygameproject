@@ -1,14 +1,16 @@
 import pygame
+from settings import *
 
 
 class Gun:
     def __init__(self, screen):
         self.screen = screen
-        self.gun_image = pygame.image.load('data/images/gun.png')
+        self.gun_image = pygame.image.load('data/images/own_caracter.png')
+        self.gun_image.set_colorkey(WHITE)
         self.gun_rect = self.gun_image.get_rect()
         self.screen_rect = self.screen.get_rect()
         self.gun_rect.centerx = self.screen_rect.centerx
-        self.gun_rect.bottom = self.screen_rect.bottom - 80
+        self.gun_rect.bottom = self.screen_rect.bottom - 73
         self.move_right = False
         self.move_left = False
 
