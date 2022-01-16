@@ -9,6 +9,8 @@ from subprocess import call
 import sys
 
 pygame.init()
+pygame.mixer.music.load('data/music_and_sounds/space_invaders_theme.mp3')
+pygame.mixer.music.play(-1)
 size = WIDTH, HEIGHT = 1300, 750
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('SPACE INVADERS')
@@ -40,7 +42,11 @@ def start_screen():
     intro_text = ["           SPACE INVADERS", "",
                   "Управление:",
                   "Правая и левая стрелочка для передвижения",
-                  "Стрелка вверх для стрельбы", "",
+                  "Стрелка вверх для стрельбы",
+                  'Чтобы отключить музыку нажите "w"',
+                  'Чтобы включить музыку нажите "e"',
+                  "",
+                  "",
                   'Нажмите кнопку "Enter", чтобы начать игру!']
     screen.fill((0, 0, 0))
     font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 30)
@@ -50,7 +56,7 @@ def start_screen():
         intro_rect = string_rendered.get_rect()
         text_coord += 10
         intro_rect.top = text_coord
-        intro_rect.x = 350
+        intro_rect.x = 330
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
     while True:
@@ -59,8 +65,13 @@ def start_screen():
                 pygame.quit()
                 call(['python', 'first_window.py'])
                 sys.exit()
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    pygame.mixer.music.pause()
+                if event.key == pygame.K_e:
+                    pygame.mixer.music.play(-1)
+                if event.key == pygame.K_RETURN:
+                    return
         pygame.display.flip()
 
 
