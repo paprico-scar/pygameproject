@@ -9,6 +9,7 @@ class Wall:
         self.rect.x = x
         self.rect.y = y
         self.hp = 15
+        self.wall = True
 
     def draw_wall(self):
         self.screen.blit(self.image, self.rect)

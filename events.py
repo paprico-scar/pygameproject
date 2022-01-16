@@ -7,15 +7,21 @@ from subprocess import call
 
 
 def events(screen, gun, bullets):
+    shoot = pygame.mixer.Sound('data/music_and_sounds/shoot.wav')
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             call(['python', 'first_window.py'])
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                pygame.mixer.music.pause()
+            if event.key == pygame.K_e:
+                pygame.mixer.music.play(-1)
             if event.key == pygame.K_UP:
                 if len(bullets) == 0:
                     new_bullet = Bullet(screen, gun)
                     bullets.add(new_bullet)
+                    shoot.play()
             if event.key == pygame.K_RIGHT:
                 gun.move_right = True
             if event.key == pygame.K_LEFT:
@@ -54,6 +60,7 @@ def update_screen(screen, gun, enemies, ufo, bullets, w1, w2, w3, w4, sc):
 
 
 def update_bullets(enemies, ufo, bullets, w1, w2, w3, w4, screen, sc, gun):
+    kill_invader = pygame.mixer.Sound('data/music_and_sounds/invaderkilled.wav')
     bullets.update()
     for bullet in bullets.sprites():
         if bullet.rect.bottom <= 0:
@@ -63,43 +70,53 @@ def update_bullets(enemies, ufo, bullets, w1, w2, w3, w4, screen, sc, gun):
                 bullets.remove(bullet)
                 w1.hp -= 1
             if w1.hp == 0:
-                gun.wall_hp -= 1
-                if gun.wall_hp == 0:
-                    endgame(screen, sc)
+                if w1.wall:
+                    gun.wall_hp -= 1
+                    w1.wall = False
+                    if gun.wall_hp == 0:
+                        endgame(screen, sc)
 
         if pygame.sprite.collide_mask(bullet, w2):
             if w2.hp != 0:
                 bullets.remove(bullet)
                 w2.hp -= 1
             if w2.hp == 0:
-                gun.wall_hp -= 1
-                if gun.wall_hp == 0:
-                    endgame(screen, sc)
+                if w2.wall:
+                    gun.wall_hp -= 1
+                    w2.wall = False
+                    if gun.wall_hp == 0:
+                        endgame(screen, sc)
 
         if pygame.sprite.collide_mask(bullet, w3):
             if w3.hp != 0:
                 bullets.remove(bullet)
                 w3.hp -= 1
             if w3.hp == 0:
-                gun.wall_hp -= 1
-                if gun.wall_hp == 0:
-                    endgame(screen, sc)
+                if w3.wall:
+                    gun.wall_hp -= 1
+                    w3.wall = False
+                    if gun.wall_hp == 0:
+                        endgame(screen, sc)
 
         if pygame.sprite.collide_mask(bullet, w4):
             if w4.hp != 0:
                 bullets.remove(bullet)
                 w4.hp -= 1
             if w4.hp == 0:
-                gun.wall_hp -= 1
-                if gun.wall_hp == 0:
-                    endgame(screen, sc)
+                if w4.wall:
+                    gun.wall_hp -= 1
+                    w4.wall = False
+                    if gun.wall_hp == 0:
+                        endgame(screen, sc)
     collide1 = pygame.sprite.groupcollide(bullets, enemies, True, True)
     if collide1:
         for i in collide1.values():
+            kill_invader.play()
             sc.score += 10
             sc.image_score()
             new_record(sc)
     if len(enemies) == 0:
+        ufo.empty()
         crete_army(screen, enemies, ufo)
         for i in enemies:
             i.speed += 0.5
