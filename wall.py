@@ -8,7 +8,7 @@ class Wall:
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.hp = 30
+        self.hp = 15
 
     def draw_wall(self):
         self.screen.blit(self.image, self.rect)

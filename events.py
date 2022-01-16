@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 from random import choice
 from bullet import Bullet
 from enemies import Invader
@@ -34,6 +34,9 @@ def update_screen(screen, gun, enemies, ufo, bullets, w1, w2, w3, w4, sc):
     sc.draw_score()
     for bullet in bullets.sprites():
         bullet.draw_bullet()
+    for i in enemies:
+        if i.y >= 550:
+            endgame(screen, sc)
     pygame.draw.line(screen, (116, 255, 3), (0, 680), (1300, 680), 3)
     if w1.hp != 0:
         w1.draw_wall()
@@ -50,7 +53,7 @@ def update_screen(screen, gun, enemies, ufo, bullets, w1, w2, w3, w4, sc):
     pygame.display.flip()
 
 
-def update_bullets(enemies, ufo, bullets, w1, w2, w3, w4, screen, sc):
+def update_bullets(enemies, ufo, bullets, w1, w2, w3, w4, screen, sc, gun):
     bullets.update()
     for bullet in bullets.sprites():
         if bullet.rect.bottom <= 0:
@@ -59,26 +62,43 @@ def update_bullets(enemies, ufo, bullets, w1, w2, w3, w4, screen, sc):
             if w1.hp != 0:
                 bullets.remove(bullet)
                 w1.hp -= 1
+            if w1.hp == 0:
+                gun.wall_hp -= 1
+                if gun.wall_hp == 0:
+                    endgame(screen, sc)
 
         if pygame.sprite.collide_mask(bullet, w2):
             if w2.hp != 0:
                 bullets.remove(bullet)
                 w2.hp -= 1
+            if w2.hp == 0:
+                gun.wall_hp -= 1
+                if gun.wall_hp == 0:
+                    endgame(screen, sc)
 
         if pygame.sprite.collide_mask(bullet, w3):
             if w3.hp != 0:
                 bullets.remove(bullet)
                 w3.hp -= 1
+            if w3.hp == 0:
+                gun.wall_hp -= 1
+                if gun.wall_hp == 0:
+                    endgame(screen, sc)
 
         if pygame.sprite.collide_mask(bullet, w4):
             if w4.hp != 0:
                 bullets.remove(bullet)
                 w4.hp -= 1
+            if w4.hp == 0:
+                gun.wall_hp -= 1
+                if gun.wall_hp == 0:
+                    endgame(screen, sc)
     collide1 = pygame.sprite.groupcollide(bullets, enemies, True, True)
     if collide1:
         for i in collide1.values():
             sc.score += 10
             sc.image_score()
+            new_record(sc)
     if len(enemies) == 0:
         crete_army(screen, enemies, ufo)
         for i in enemies:
@@ -89,6 +109,7 @@ def update_bullets(enemies, ufo, bullets, w1, w2, w3, w4, screen, sc):
         p = int(choice(points))
         sc.score += p
         sc.image_score()
+        new_record(sc)
         u = UFO(screen)
         ufo.add(u)
 
@@ -99,15 +120,65 @@ def update_enemies(enemies):
 
 def crete_army(screen, enemies, ufo):
     enemy = Invader(screen)
-    width1 = enemy.rect.width
+    width = enemy.rect.width
     height = enemy.rect.height
     u = UFO(screen)
     ufo.add(u)
     for y in range(5):
         for x in range(11):
             enemy = Invader(screen)
-            enemy.x = width1 * 1.3 * x
+            enemy.x = width * 1.3 * x
             enemy.y = height * 1.3 * y
             enemy.rect.x = enemy.x
             enemy.rect.y = enemy.y
             enemies.add(enemy)
+
+
+def new_record(sc):
+    if sc.score > sc.hi_score:
+        sc.hi_score = sc. score
+        sc.image_hi_score()
+        with open('data/db/hight_score.txt', 'w') as f:
+            f.write(str(sc.hi_score))
+
+
+def endgame(screen, sc):
+    intro_text = ["           ИГРА ОКОНЧЕНА", "",
+                  "Лучший счёт: ",
+                  "Счёт: ", "",
+                  'Нажмите кнопку "Enter", чтобы начать заново!']
+    score = str(sc.score)
+    with open('data/db/hight_score.txt', 'r') as f:
+        hi_score = f.readline()
+    screen.fill((0, 0, 0))
+    font = pygame.font.Font('data/font/CustomFontTtf16H30.ttf', 40)
+    text_coord = 200
+    for line in intro_text:
+        string_rendered = font.render(line, True, 'white')
+        intro_rect = string_rendered.get_rect()
+        text_coord += 10
+        intro_rect.top = text_coord
+        intro_rect.x = 300
+        text_coord += intro_rect.height
+        screen.blit(string_rendered, intro_rect)
+    score_im = font.render(score, True, 'white')
+    score_rect = score_im.get_rect()
+    score_rect.top = 360
+    score_rect.x = 410
+    hi_score_im = font.render(hi_score, True, 'white')
+    hi_score_rect = hi_score_im.get_rect()
+    hi_score_rect.top = 310
+    hi_score_rect.x = 540
+    screen.blit(score_im, score_rect)
+    screen.blit(hi_score_im, hi_score_rect)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                call(['python', 'first_window.py'])
+                sys.exit()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                pygame.quit()
+                call(['python', 'main.py'])
+                sys.exit()
+        pygame.display.flip()

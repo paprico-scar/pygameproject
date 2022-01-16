@@ -13,12 +13,13 @@ class Gun:
         self.gun_rect.bottom = self.screen_rect.bottom - 73
         self.move_right = False
         self.move_left = False
+        self.wall_hp = 4
 
     def draw_gun(self):
         self.screen.blit(self.gun_image, self.gun_rect)
 
     def update_gun(self):
         if self.move_right and self.gun_rect.right < self.screen_rect.right:
-            self.gun_rect.centerx += 7
+            self.gun_rect.centerx += 6
         if self.move_left and self.gun_rect.left > self.screen_rect.left:
-            self.gun_rect.centerx -= 7
+            self.gun_rect.centerx -= 6
