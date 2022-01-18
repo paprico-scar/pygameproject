@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 from settings import *
 from subprocess import call
 
@@ -14,18 +14,22 @@ while waiting:
     clock.tick(FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            waiting = False
             pygame.quit()
+            waiting = False
+            sys.exit()
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_h:
-                waiting = False
                 pygame.quit()
                 call(['python', 'game.py'])
+                sys.exit()
             if event.key == pygame.K_j:
-                waiting = False
                 pygame.quit()
                 call(['python', 'main.py'])
+                sys.exit()
     draw_text(f'Добро пожаловать в {FIRST_WINDOW_TITLE}', WHITE, WIDTH / 2, HEIGHT / 4, screen, font)
     draw_text('Чтобы играть в SPACE INVADERS нажмите "j"', WHITE, WIDTH / 2, HEIGHT / 3 + 40, screen, font)
     draw_text('Чтобы играть в RELAX нажмите "h"', WHITE, WIDTH / 2, HEIGHT / 3 + 120, screen, font)
     pygame.display.flip()
+
+
+
